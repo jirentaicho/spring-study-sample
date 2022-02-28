@@ -1,0 +1,14 @@
+version: '3.7'
+services:
+  postgre:
+    image: postgres:latest
+    ports:
+      - 5432:5432
+    container_name: misaka_postgre
+    volumes:
+      - ./data:/var/lib/postgresql/data
+      - ./setup:/docker-entrypoint-initdb.d
+    environment:
+      POSTGRES_USER: misaka
+      POSTGRES_PASSWORD: mikoto
+      POSTGRES_DB: misaka

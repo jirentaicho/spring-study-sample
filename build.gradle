@@ -1,0 +1,59 @@
+import com.volkruss.CodeGenPlugin
+
+buildscript {
+	ext {
+		dockerComposePluginVersion = "0.15.0"
+	}
+	repositories {
+		mavenCentral()
+		jcenter()
+	}
+	dependencies {
+		classpath "com.avast.gradle:gradle-docker-compose-plugin:${dockerComposePluginVersion}"
+	}
+}
+
+plugins {
+	id 'org.springframework.boot' version '2.6.3'
+	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id 'java'
+}
+
+group = 'com.volkruss'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa' //build時にもデータベースに接続できるようにしておく
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	compileOnly 'org.projectlombok:lombok'
+	runtimeOnly 'org.postgresql:postgresql'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+apply plugin: "docker-compose"
+apply plugin: CodeGenPlugin // ここを追加
+
+
+dockerCompose {
+	useComposeFiles = ["docker/docker-compose.yml"]
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+
